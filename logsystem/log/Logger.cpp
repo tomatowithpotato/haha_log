@@ -90,8 +90,6 @@ AsyncLogger::AsyncLogger(const std::string &name, int flushInterval)
 {
     // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
     formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"));
-    defaultAppender_ = std::make_shared<StdoutAsyncLogAppender>();
-    defaultAppender_->setFormatter(formatter_);
 }
 
 void AsyncLogger::log(LogInfo::ptr info){
@@ -101,9 +99,6 @@ void AsyncLogger::log(LogInfo::ptr info){
             for(auto &i : appenders_){
                 i->append(info);
             }
-        }
-        else if(defaultAppender_){
-            defaultAppender_->append(info);
         }
     }
 }

@@ -118,17 +118,17 @@ private:
     uint64_t lastTime_;
 };
 
-// 输出到控制台的异步Appender
-class StdoutAsyncLogAppender : public AsyncLogAppender{
-public:
-    typedef std::shared_ptr<StdoutAsyncLogAppender> ptr;
+// // 输出到控制台的异步Appender
+// class StdoutAsyncLogAppender : public AsyncLogAppender{
+// public:
+//     typedef std::shared_ptr<StdoutAsyncLogAppender> ptr;
     
-    StdoutAsyncLogAppender(off_t rollSize,
-                            int flushInterval);
-    void append(LogInfo::ptr info) override;
-    void flush() override;
-    // virtual std::string toYamlString() override;
-};
+//     StdoutAsyncLogAppender(off_t rollSize,
+//                             int flushInterval);
+//     void append(LogInfo::ptr info) override;
+//     void flush() override;
+//     // virtual std::string toYamlString() override;
+// };
 
 // 输出到文件的异步Appender
 class FileAsyncLogAppender : public AsyncLogAppender{

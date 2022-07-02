@@ -1,5 +1,6 @@
 #include "base/FileUtil.h"
 #include <exception>
+#include <assert.h>
 
 namespace haha{
 
@@ -25,19 +26,18 @@ SmallFileUtil::~SmallFileUtil()
 }
 
 // return errno
-template<typename String>
 int SmallFileUtil::readToString(int maxSize,
-                                String* content,
+                                std::string &content,
                                 int64_t* fileSize,
                                 int64_t* modifyTime,
                                 int64_t* createTime)
 {
     static_assert(sizeof(off_t) == 8, "_FILE_OFFSET_BITS = 64");
-    assert(content != NULL);
+
     int err = err_;
     if (fd_ >= 0)
     {
-        content->clear();
+        content.clear();
 
         if (fileSize)
         {
@@ -47,7 +47,7 @@ int SmallFileUtil::readToString(int maxSize,
                 if (S_ISREG(statbuf.st_mode))
                 {
                     *fileSize = statbuf.st_size;
-                    content->reserve(static_cast<int>(std::min(static_cast<int64_t>(maxSize), *fileSize)));
+                    content.reserve(static_cast<int>(std::min(static_cast<int64_t>(maxSize), *fileSize)));
                 }
                 else if (S_ISDIR(statbuf.st_mode))
                 {
@@ -68,13 +68,13 @@ int SmallFileUtil::readToString(int maxSize,
             }
         }
 
-        while (content->size() < static_cast<size_t>(maxSize))
+        while (content.size() < static_cast<size_t>(maxSize))
         {
-            size_t toRead = std::min(static_cast<size_t>(maxSize) - content->size(), sizeof(buf_));
+            size_t toRead = std::min(static_cast<size_t>(maxSize) - content.size(), sizeof(buf_));
             ssize_t n = ::read(fd_, buf_, toRead);
             if (n > 0)
             {
-                content->append(buf_, n);
+                content.append(buf_, n);
             }
             else
             {
@@ -111,6 +111,17 @@ int SmallFileUtil::readToBuffer(int* size)
     return err;
 }
 
+
+int readSmallFile(const char* filename,
+                    int maxSize,
+                    std::string &content,
+                    int64_t* fileSize,
+                    int64_t* modifyTime,
+                    int64_t* createTime)
+{
+    SmallFileUtil file(filename);
+    return file.readToString(maxSize, content, fileSize, modifyTime, createTime);
+}
 
 
 File::File(const char* file_path)

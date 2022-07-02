@@ -138,14 +138,14 @@ std::string_view procname(const std::string& stat)
 std::string procStatus()
 {
   std::string result;
-  FileUtil::readSmallFile("/proc/self/status", 65536, &result);
+  FileUtil::readSmallFile("/proc/self/status", 65536, result);
   return result;
 }
 
 std::string procStat()
 {
   std::string result;
-  FileUtil::readSmallFile("/proc/self/stat", 65536, &result);
+  FileUtil::readSmallFile("/proc/self/stat", 65536, result);
   return result;
 }
 
@@ -154,7 +154,7 @@ std::string threadStat()
   char buf[64];
   snprintf(buf, sizeof(buf), "/proc/self/task/%d/stat", static_cast<int>(haha::Thread::getCurrentThreadId()));
   std::string result;
-  FileUtil::readSmallFile(buf, 65536, &result);
+  FileUtil::readSmallFile(buf, 65536, result);
   return result;
 }
 

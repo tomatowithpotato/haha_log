@@ -77,12 +77,12 @@ AsyncLogAppender::AsyncLogAppender(off_t rollSize,
 }
 
 
-StdoutAsyncLogAppender::StdoutAsyncLogAppender(off_t rollSize,
-                                                int flushInterval)
-    :AsyncLogAppender(rollSize, flushInterval)
-{
+// StdoutAsyncLogAppender::StdoutAsyncLogAppender(off_t rollSize,
+//                                                 int flushInterval)
+//     :AsyncLogAppender(rollSize, flushInterval)
+// {
 
-}
+// }
 
 
 FileAsyncLogAppender::FileAsyncLogAppender(const std::string &filepath,

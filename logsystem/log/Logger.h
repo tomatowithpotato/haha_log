@@ -40,7 +40,6 @@ protected:
     LogLevel::Level level_;                    // 日志级别
     MutexType mutex_;
     std::list<LogAppender::ptr> appenders_;    // Appender集合
-    LogAppender::ptr defaultAppender_;
     LogFormatter::ptr formatter_;
 };
 
@@ -49,6 +48,8 @@ class SyncLogger : public Logger{
 public:
     SyncLogger(const std::string &name);
     void log(LogInfo::ptr info) override;
+protected:
+    LogAppender::ptr defaultAppender_;
 };
 
 // 异步日志器
