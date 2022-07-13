@@ -12,6 +12,8 @@
 
 namespace haha{
 
+namespace log{
+
 // 日志输出地
 class LogAppender{
 friend class Logger;
@@ -56,8 +58,8 @@ class AsyncLogAppender : public LogAppender{
 public:
     typedef MutexLock MutexType;
 
-    AsyncLogAppender(off_t rollSize,
-                    int flushInterval);
+    AsyncLogAppender(off_t rollSize);
+                    // int flushInterval);
     
     virtual ~AsyncLogAppender() {}
     
@@ -73,7 +75,7 @@ protected:
     typedef std::vector<std::unique_ptr<Buffer>> BufferVector;
     typedef BufferVector::value_type BufferPtr;
 
-    const int flushInterval_;
+    // const int flushInterval_;
     const off_t rollSize_;
 
     MutexType mutex_;
@@ -136,8 +138,8 @@ public:
     typedef std::shared_ptr<FileAsyncLogAppender> ptr;
 
     FileAsyncLogAppender(const std::string &filepath,
-                        off_t rollSize,
-                        int flushInterval);
+                        off_t rollSize);
+                        // int flushInterval);
     
     ~FileAsyncLogAppender(){ file_->flush(); }
 
@@ -149,6 +151,8 @@ private:
     std::unique_ptr<LogFile> file_;
     uint64_t lastTime_;
 };
+
+}
 
 }
 

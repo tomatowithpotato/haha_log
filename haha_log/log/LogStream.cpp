@@ -2,6 +2,8 @@
 
 namespace haha{
 
+namespace log{
+
 const char digits[] = "9876543210123456789";
 const char* zero = digits + 9;
 static_assert(sizeof(digits) == 20, "wrong number of digits");
@@ -144,6 +146,8 @@ LogStream& LogStream::operator<<(double v)
     buffer_.add(len);
   }
   return *this;
+}
+
 }
 
 }

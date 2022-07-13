@@ -1,5 +1,5 @@
-#ifndef __HAHA_LOGGER_H__
-#define __HAHA_LOGGER_H__
+#ifndef __HAHA_LOG_LOGGER_H__
+#define __HAHA_LOG_LOGGER_H__
 
 #include <memory>
 #include <list>
@@ -9,6 +9,8 @@
 #include "log/LogAppender.h"
 
 namespace haha{
+
+namespace log{
 
 // 日志器
 class Logger : public std::enable_shared_from_this<Logger>{
@@ -20,7 +22,7 @@ public:
 
     virtual ~Logger() {}
 
-    virtual void log(LogInfo::ptr info) = 0;
+    virtual void log(LogInfo::ptr info) {}
 
     virtual void addAppender(LogAppender::ptr appender);
     void delAppender(LogAppender::ptr appender);
@@ -77,6 +79,8 @@ private:
     std::atomic<bool> running_;
     Thread::ptr thread_;
 };
+
+}
 
 }
 

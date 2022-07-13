@@ -3,6 +3,8 @@
 
 namespace haha{
 
+namespace log{
+
 void Logger::setFormatter(LogFormatter::ptr val){
     MutexType::RAIILock lock(mutex_);
     formatter_ = val;
@@ -120,6 +122,8 @@ void AsyncLogger::task(){
         }
     }
     
+}
+
 }
 
 }

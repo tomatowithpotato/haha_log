@@ -3,6 +3,8 @@
 
 namespace haha{
 
+namespace log{
+
 const char* LogLevel::toString(LogLevel::Level level){
 // 骚操作时间
     switch (level)
@@ -82,5 +84,7 @@ void LogInfo::format(const char* fmt, va_list al){
     }
 }
 
+
+}
 
 }

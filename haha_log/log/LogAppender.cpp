@@ -5,6 +5,8 @@
 
 namespace haha{
 
+namespace log{
+
 void LogAppender::setFormatter(LogFormatter::ptr val){
     MutexType::RAIILock lock(m_mutex);
     m_formatter = val;
@@ -62,10 +64,10 @@ bool FileSyncLogAppender::reopen(){
 // ################################################### 异步 ###################################################
 
 
-AsyncLogAppender::AsyncLogAppender(off_t rollSize,
-                                    int flushInterval)
-    :flushInterval_(flushInterval),
-    rollSize_(rollSize),
+AsyncLogAppender::AsyncLogAppender(off_t rollSize)
+                                    // int flushInterval)
+    // :flushInterval_(flushInterval),
+    :rollSize_(rollSize),
     currentBuffer_(std::make_unique<Buffer>()),
     nextBuffer_(std::make_unique<Buffer>()),
     newBuffer1(std::make_unique<Buffer>()),
@@ -86,9 +88,8 @@ AsyncLogAppender::AsyncLogAppender(off_t rollSize,
 
 
 FileAsyncLogAppender::FileAsyncLogAppender(const std::string &filepath,
-                                            off_t rollSize,
-                                            int flushInterval)
-    :AsyncLogAppender(rollSize, flushInterval),
+                                            off_t rollSize)
+    :AsyncLogAppender(rollSize),
     filepath_(filepath)
 {
     file_ = std::make_unique<LogFile>(filepath_, rollSize_, false);
@@ -185,6 +186,8 @@ void FileAsyncLogAppender::flush(){
 
     buffersToWrite.clear();
     file_->flush();
+}
+
 }
 
 }

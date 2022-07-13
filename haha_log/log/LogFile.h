@@ -1,5 +1,5 @@
-#ifndef __HAHA_LOGFILE_H__
-#define __HAHA_LOGFILE_H__
+#ifndef __HAHA_LOG_LOGFILE_H__
+#define __HAHA_LOG_LOGFILE_H__
 
 #include <string>
 #include <memory>
@@ -7,6 +7,8 @@
 #include "base/Mutex.h"
 
 namespace haha{
+
+namespace log{
 
 class AppendFile : noncopyable
 {
@@ -67,6 +69,8 @@ private:
 
     const static int kRollPerSeconds_ = 60*60*24;
 };
+
+}
 
 }
 

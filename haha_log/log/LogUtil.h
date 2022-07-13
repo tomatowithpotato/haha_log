@@ -1,5 +1,5 @@
-#ifndef __HAHA_LOGUTIL_H__
-#define __HAHA_LOGUTIL_H__
+#ifndef __HAHA_LOG_LOGUTIL_H__
+#define __HAHA_LOG_LOGUTIL_H__
 
 #include <string>
 #include <string.h>
@@ -7,6 +7,8 @@
 #include "base/ConditionVariable.h"
 
 namespace haha{
+
+namespace log{
 
 const int kSmallBuffer = 4000;
 const int kLargeBuffer = 4000*1000;
@@ -52,6 +54,8 @@ private:
     char data_[SIZE];
     char* cur_;
 };
+
+}
 
 }
 

@@ -5,6 +5,8 @@
 
 namespace haha{
 
+namespace log{
+
 thread_local char t_errnobuf[512];
 thread_local char t_time[64];
 thread_local time_t t_lastSecond;
@@ -162,6 +164,8 @@ std::string LogFile::getLogFileName(const std::string& basename, time_t* now)
     filename += ".log";
 
     return filename;
+}
+
 }
 
 }

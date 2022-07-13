@@ -1,5 +1,5 @@
-#ifndef __HAHA_LOGSTREAM_H__
-#define __HAHA_LOGSTREAM_H__
+#ifndef __HAHA_LOG_LOGSTREAM_H__
+#define __HAHA_LOG_LOGSTREAM_H__
 
 #include <string>
 #include <string.h>
@@ -7,6 +7,8 @@
 #include "log/LogUtil.h"
 
 namespace haha{
+
+namespace log{
 
 class LogStream{
 typedef LogStream self;
@@ -97,6 +99,8 @@ private:
 
     static const int kMaxNumericSize = 48;
 };
+
+}
 
 }
 

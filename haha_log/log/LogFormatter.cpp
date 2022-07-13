@@ -5,6 +5,8 @@
 
 namespace haha{
 
+namespace log{
+
 /* *************************************LogFormatter 重量级************************************* */
 
 LogFormatter::LogFormatter(const std::string &pattern)
@@ -155,6 +157,8 @@ std::string LogFormatter::format(LogInfo::ptr info){
         i->format(ss, info);
     }
     return ss.str();
+}
+
 }
 
 }

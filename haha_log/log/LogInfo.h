@@ -1,11 +1,13 @@
-#ifndef __HAHA_LOGINFO_H__
-#define __HAHA_LOGINFO_H__
+#ifndef __HAHA_LOG_LOGINFO_H__
+#define __HAHA_LOG_LOGINFO_H__
 
 #include <string>
 #include <sstream>
 #include <memory>
 
 namespace haha{
+
+namespace log{
 
 // 日志级别
 class LogLevel{
@@ -65,6 +67,8 @@ private:
 
     LogLevel::Level level_;
 };
+
+}
 
 }
 

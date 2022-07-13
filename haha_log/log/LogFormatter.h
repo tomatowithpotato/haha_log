@@ -1,5 +1,5 @@
-#ifndef __HAHA_LOGFORMATTER_H__
-#define __HAHA_LOGFORMATTER_H__
+#ifndef __HAHA_LOG_LOGFORMATTER_H__
+#define __HAHA_LOG_LOGFORMATTER_H__
 
 #include <string>
 #include <vector>
@@ -9,6 +9,8 @@
 #include "log/LogInfo.h"
 
 namespace haha{
+
+namespace log{
 
 // 日志格式器
 
@@ -172,6 +174,8 @@ public:
 private:
     std::string m_string;
 };
+
+}
 
 }
 
