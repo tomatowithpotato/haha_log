@@ -5,12 +5,13 @@
 #include <string>
 #include <stdarg.h>
 #include "base/Mutex.h"
+#include "base/util.h"
 #include "Logger.h"
 
 
 #define HAHA_LOG_LEVEL(logger, level) \
     if(logger->getLevel() <= level) \
-    haha::log::LogInfoWrapper(logger, haha::log::LogInfo::ptr(new haha::log::LogInfo(logger, level, \
+    haha::log::LogInfoWrapper(logger, haha::log::LogInfo::ptr(new haha::log::LogInfo(logger->getName(), level, \
                             __FILE__, __LINE__, 0, haha::GetThreadId(), \
                             time(0), haha::Thread::getCurrentThreadName()))).getSS()
 
@@ -23,7 +24,7 @@
 
 #define HAHA_LOG_FMT_LEVEL(logger, level, fmt, ...) \
     if(logger->getLevel() <= level) \
-    haha::log::LogInfoWrapper(haha::log::LogInfo::ptr(new haha::log::LogInfo(logger, level, \
+    haha::log::LogInfoWrapper(logger, haha::log::LogInfo::ptr(new haha::log::LogInfo(logger->getName(), level, \
                             __FILE__, __LINE__, 0, haha::GetThreadId(), \
                             time(0), haha::Thread::getCurrentThreadName()))).getLogInfo()->format(fmt, __VA_ARGS__)
 
@@ -34,8 +35,8 @@
 #define HAHA_LOG_FMT_FATAL(logger, fmt, ...)  HAHA_LOG_FMT_LEVEL(logger, haha::log::LogLevel::Level::FATAL, fmt, __VA_ARGS__)
 
 
-#define HAHA_LOG_SYNC_ROOT() haha::log::Log::LoggerManager::getInstance().getSyncRoot();
-#define HAHA_LOG_ASYNC_ROOT() haha::log::Log::LoggerManager::getInstance().getAsyncRoot();
+#define HAHA_LOG_SYNC_ROOT() haha::log::LoggerManager::getInstance().getSyncRoot()
+#define HAHA_LOG_ASYNC_ROOT() haha::log::LoggerManager::getInstance().getAsyncRoot()
 
 
 
@@ -45,6 +46,8 @@ namespace log{
 
 static const std::string default_log_file = "app";
 static const int default_roll_size = 10 * 1000 * 1000;
+static const int default_flush_interval = 3;
+
 
 class LogInfoWrapper{
 public:
@@ -52,11 +55,13 @@ public:
     ~LogInfoWrapper(){
         logger_->log(info_);
     }
+    LogInfo::OutStream& getSS() { return info_->getSS(); }
 
 private:
     Logger::ptr logger_;
     LogInfo::ptr info_;
 };
+
 
 class LoggerManager{
 public:

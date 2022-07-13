@@ -28,6 +28,7 @@ public:
 // 日志事件
 class LogInfo{
 public:
+    using OutStream = std::stringstream; 
     typedef std::shared_ptr<LogInfo> ptr;
     LogInfo(std::string loggerName,
             LogLevel::Level level, 
@@ -50,7 +51,7 @@ public:
     std::string getContent() const {return ss_.str();}  
     LogLevel::Level getLevel() const {return level_;}
 
-    std::stringstream& getSS() {return ss_;}
+    OutStream& getSS() {return ss_;}
     void format(const char* fmt, ...);
     void format(const char* fmt, va_list al);
        
@@ -63,7 +64,7 @@ private:
     // uint32_t m_fiberId = 0;             // 协程ID
     uint64_t time_;                    // 时间戳
     std::string threadName_;           // 线程名
-    std::stringstream ss_;             // 事件内容
+    OutStream ss_;             // 事件内容
 
     LogLevel::Level level_;
 };

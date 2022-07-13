@@ -11,7 +11,7 @@ LoggerManager::LoggerManager()
     sync_root_ = std::make_shared<SyncLogger>("sync_root");
     sync_root_->addAppender(LogAppender::ptr(new StdoutSyncLogAppender));
 
-    async_root_ = std::make_shared<AsyncLogger>("async_root");
+    async_root_ = std::make_shared<AsyncLogger>("async_root", default_flush_interval);
     async_root_->addAppender(LogAppender::ptr(new FileAsyncLogAppender(default_log_file, default_roll_size)));
 
     loggers_[sync_root_->getName()] = sync_root_;
