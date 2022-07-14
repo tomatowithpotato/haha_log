@@ -58,7 +58,7 @@ class AsyncLogAppender : public LogAppender{
 public:
     typedef MutexLock MutexType;
 
-    AsyncLogAppender(off_t rollSize);
+    AsyncLogAppender();
                     // int flushInterval);
     
     virtual ~AsyncLogAppender() {}
@@ -74,9 +74,6 @@ protected:
     typedef FixedBuffer<kLargeBuffer> Buffer;
     typedef std::vector<std::unique_ptr<Buffer>> BufferVector;
     typedef BufferVector::value_type BufferPtr;
-
-    // const int flushInterval_;
-    const off_t rollSize_;
 
     MutexType mutex_;
 
@@ -100,7 +97,6 @@ class StdoutSyncLogAppender : public SyncLogAppender{
 public:
     typedef std::shared_ptr<StdoutSyncLogAppender> ptr;
     void append(LogInfo::ptr info) override;
-    // virtual std::string toYamlString() override;
 };
 
 // 输出到文件的同步Appender
@@ -108,15 +104,16 @@ class FileSyncLogAppender : public SyncLogAppender{
 public:
     typedef std::shared_ptr<FileSyncLogAppender> ptr;
 
-    FileSyncLogAppender(const std::string &filepath);
-    void append(LogInfo::ptr info) override;
-    // virtual std::string toYamlString() override;
+    FileSyncLogAppender(const std::string &filepath,
+                        off_t rollSize);
     
-    // 重新打开文件，打开成功返回true
-    bool reopen();
+    void append(LogInfo::ptr info) override;
+
 private:
     std::string filepath_;
-    std::ofstream filestream_;
+    const off_t rollSize_;
+    // std::ofstream filestream_;
+    std::unique_ptr<LogFile> file_;
     uint64_t lastTime_;
 };
 
@@ -148,6 +145,7 @@ public:
     // virtual std::string toYamlString() override;
 private:
     std::string filepath_;
+    const off_t rollSize_;
     std::unique_ptr<LogFile> file_;
     uint64_t lastTime_;
 };

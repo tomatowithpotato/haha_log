@@ -30,45 +30,28 @@ void StdoutSyncLogAppender::append(LogInfo::ptr info){
 }
 
 
-FileSyncLogAppender::FileSyncLogAppender(const std::string &filepath)
-    :filepath_(filepath){
-    reopen();
+FileSyncLogAppender::FileSyncLogAppender(const std::string &filepath, off_t rollSize)
+    :filepath_(filepath),
+    rollSize_(rollSize)
+{
+    file_ = std::make_unique<LogFile>(filepath_, rollSize_, false);
 }
 
 void FileSyncLogAppender::append(LogInfo::ptr info){
     auto level = info->getLevel();
     if(level >= m_level){
-        // 每秒都尝试重新打开文件
-        uint64_t now = time(0);
-        if(now != lastTime_){
-            reopen();
-            lastTime_ = now;
-        }
         MutexType::RAIILock lock(m_mutex);
-        if(!(filestream_ << m_formatter->format(info))){
-            std::cout << "error" << std::endl;
-        }
+        auto logline = m_formatter->format(info);
+        file_->append(logline.data(), logline.size());
     }
-}
-
-bool FileSyncLogAppender::reopen(){
-    MutexType::RAIILock lock(m_mutex);
-    if(filestream_){
-        filestream_.close();
-    }
-    filestream_.open(filepath_);
-    return !filestream_.fail();
 }
 
 
 // ################################################### 异步 ###################################################
 
 
-AsyncLogAppender::AsyncLogAppender(off_t rollSize)
-                                    // int flushInterval)
-    // :flushInterval_(flushInterval),
-    :rollSize_(rollSize),
-    currentBuffer_(std::make_unique<Buffer>()),
+AsyncLogAppender::AsyncLogAppender()
+    :currentBuffer_(std::make_unique<Buffer>()),
     nextBuffer_(std::make_unique<Buffer>()),
     newBuffer1(std::make_unique<Buffer>()),
     newBuffer2(std::make_unique<Buffer>())
@@ -89,8 +72,8 @@ AsyncLogAppender::AsyncLogAppender(off_t rollSize)
 
 FileAsyncLogAppender::FileAsyncLogAppender(const std::string &filepath,
                                             off_t rollSize)
-    :AsyncLogAppender(rollSize),
-    filepath_(filepath)
+    :filepath_(filepath),
+    rollSize_(rollSize)
 {
     file_ = std::make_unique<LogFile>(filepath_, rollSize_, false);
 }
@@ -135,13 +118,17 @@ void FileAsyncLogAppender::flush(){
     assert(newBuffer2 && newBuffer2->length() == 0);
     assert(buffersToWrite.empty());
     
-    buffers_.push_back(std::move(currentBuffer_));
-    currentBuffer_ = std::move(newBuffer1);
-    buffersToWrite.swap(buffers_);
-    if (!nextBuffer_)
     {
-        nextBuffer_ = std::move(newBuffer2);
+        MutexType::RAIILock lock(mutex_);
+        buffers_.push_back(std::move(currentBuffer_));
+        currentBuffer_ = std::move(newBuffer1);
+        buffersToWrite.swap(buffers_);
+        if (!nextBuffer_)
+        {
+            nextBuffer_ = std::move(newBuffer2);
+        }
     }
+
 
     assert(!buffersToWrite.empty());
 

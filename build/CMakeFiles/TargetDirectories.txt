@@ -1,5 +1,0 @@
-/home/lighthouse/MyCode/haha_log/build/CMakeFiles/rebuild_cache.dir
-/home/lighthouse/MyCode/haha_log/build/CMakeFiles/edit_cache.dir
-/home/lighthouse/MyCode/haha_log/build/CMakeFiles/AsyncLogTest.out.dir
-/home/lighthouse/MyCode/haha_log/build/CMakeFiles/SyncLogTest.out.dir
-/home/lighthouse/MyCode/haha_log/build/CMakeFiles/haha_log.dir

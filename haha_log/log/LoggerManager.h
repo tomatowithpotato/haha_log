@@ -44,7 +44,8 @@ namespace haha{
 
 namespace log{
 
-static const std::string default_log_file = "app";
+static const std::string default_sync_log_file = "app_sync";
+static const std::string default_async_log_file = "app_async";
 static const int default_roll_size = 10 * 1000 * 1000;
 static const int default_flush_interval = 3;
 
@@ -87,6 +88,7 @@ private:
     std::map<std::string, Logger::ptr> loggers_;
     Logger::ptr sync_root_;
     Logger::ptr async_root_;
+    Logger::ptr sync_stdout_;
 };
 
 }

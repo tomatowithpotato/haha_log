@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <list>
+#include <iostream>
 #include "base/Mutex.h"
 #include "base/Thread.h"
 #include "log/LogInfo.h"
@@ -62,8 +63,10 @@ public:
 
     AsyncLogger(const std::string &name, int flushInterval);
     ~AsyncLogger(){
+        std::cout << "~AsyncLogger()" << std::endl;
         running_ = false;
         cond_->notify_all();
+        thread_->join();
     }
 
     void log(LogInfo::ptr info) override;

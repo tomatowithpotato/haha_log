@@ -111,7 +111,7 @@ void AsyncLogger::addAppender(LogAppender::ptr appender){
 }
 
 void AsyncLogger::task(){
-    while (running_)
+    while (running_ == true)
     {
         MutexType::RAIILock lock(mutex_);
         cond_->waitForSeconds(mutex_, flushInterval_);
