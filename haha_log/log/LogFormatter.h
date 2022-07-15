@@ -7,6 +7,7 @@
 #include <memory>
 
 #include "log/LogInfo.h"
+#include "log/LogStream.h"
 
 namespace haha{
 
@@ -17,20 +18,20 @@ namespace log{
 class LogFormatter{
 public:
     typedef std::shared_ptr<LogFormatter> ptr;
-    typedef std::ostream Stream;
+    typedef LogStream outStream;
 
     LogFormatter(const std::string &pattern);
-    void format(Stream&, LogInfo::ptr info);
-    std::string format(LogInfo::ptr info);
+    void format(outStream&, LogInfo::ptr info);
+    // outStream format(LogInfo::ptr info);
 
     class FormatItem{
     public:
         typedef std::shared_ptr<FormatItem> ptr;
-        typedef LogFormatter::Stream Stream;
+        typedef LogFormatter::outStream outStream;
 
         // FormatItem(const std::string &fmt = ""){}
         virtual ~FormatItem(){}
-        virtual void format(Stream& os, LogInfo::ptr info) = 0;
+        virtual void format(outStream& os, LogInfo::ptr info) = 0;
     };
     void init();
 
@@ -47,7 +48,7 @@ private:
 class MessageFormatItem : public LogFormatter::FormatItem{
 public:
     MessageFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << info->getContent();
     }
 };
@@ -56,7 +57,7 @@ public:
 class LevelFormatItem : public LogFormatter::FormatItem{
 public:
     LevelFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << LogLevel::toString(info->getLevel());
     }
 };
@@ -65,7 +66,7 @@ public:
 class ElapseFormatItem : public LogFormatter::FormatItem{
 public:
     ElapseFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << info->getElapse();
     }
 };
@@ -74,7 +75,7 @@ public:
 class NameFormatItem : public LogFormatter::FormatItem{
 public:
     NameFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << info->getLoggerName();
     }
 };
@@ -83,7 +84,7 @@ public:
 class ThreadIdFormatItem : public LogFormatter::FormatItem{
 public:
     ThreadIdFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << info->getThreadId();
     }
 };
@@ -92,7 +93,7 @@ public:
 // class FiberIdFormatItem : public LogFormatter::FormatItem{
 // public:
 //     FiberIdFormatItem(const std::string &fmt = ""){}
-//     void format(Stream &os, LogInfo::ptr info) override{
+//     void format(outStream &os, LogInfo::ptr info) override{
 //         os << info->getFiberId();
 //     }
 // };
@@ -101,7 +102,7 @@ public:
 class ThreadNameFormatItem : public LogFormatter::FormatItem {
 public:
     ThreadNameFormatItem(const std::string& str = "") {}
-    void format(Stream& os, LogInfo::ptr info) override {
+    void format(outStream& os, LogInfo::ptr info) override {
         os << info->getThreadName();
     }
 };
@@ -114,7 +115,7 @@ public:
             m_format = "%Y-%m-%d %H:%M:%S";
         }
     }
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         struct tm tm;
         time_t time = info->getTime();
         localtime_r(&time, &tm);
@@ -130,7 +131,7 @@ private:
 class FilenameFormatItem : public LogFormatter::FormatItem{
 public:
     FilenameFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << info->getFile();
     }
 };
@@ -139,7 +140,7 @@ public:
 class LineFormatItem : public LogFormatter::FormatItem{
 public:
     LineFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << info->getLine();
     }
 };
@@ -148,8 +149,9 @@ public:
 class NewLineFormatItem : public LogFormatter::FormatItem{
 public:
     NewLineFormatItem(const std::string &fmt = ""){}
-    void format(Stream &os, LogInfo::ptr info) override{
-        os << std::endl;
+    void format(outStream &os, LogInfo::ptr info) override{
+        // os << std::endl;
+        os << '\n';
     }
 };
 
@@ -157,7 +159,7 @@ public:
 class StringFormatItem : public LogFormatter::FormatItem{
 public:
     StringFormatItem(const std::string &str):m_string(str){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << m_string;
     }
 private:
@@ -168,7 +170,7 @@ private:
 class TabFormatItem : public LogFormatter::FormatItem{
 public:
     TabFormatItem(const std::string &str = ""):m_string(str){}
-    void format(Stream &os, LogInfo::ptr info) override{
+    void format(outStream &os, LogInfo::ptr info) override{
         os << "\t";
     }
 private:

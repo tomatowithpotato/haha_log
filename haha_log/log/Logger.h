@@ -63,7 +63,6 @@ public:
 
     AsyncLogger(const std::string &name, int flushInterval);
     ~AsyncLogger(){
-        std::cout << "~AsyncLogger()" << std::endl;
         running_ = false;
         cond_->notify_all();
         thread_->join();

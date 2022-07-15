@@ -145,19 +145,19 @@ void LogFormatter::init(){
 }
 
 
-void LogFormatter::format(Stream &ss, LogInfo::ptr info){
+void LogFormatter::format(outStream &ss, LogInfo::ptr info){
     for(auto &i : m_items){
         i->format(ss, info);
     }
 }
 
-std::string LogFormatter::format(LogInfo::ptr info){
-    std::stringstream ss;
-    for(auto &i : m_items){
-        i->format(ss, info);
-    }
-    return ss.str();
-}
+// LogFormatter::outStream LogFormatter::format(LogInfo::ptr info){
+//     outStream ss;
+//     for(auto &i : m_items){
+//         i->format(ss, info);
+//     }
+//     return ss;
+// }
 
 }
 

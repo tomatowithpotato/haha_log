@@ -12,12 +12,12 @@ std::atomic<int> cnt = 0;
 haha::ThreadPool &pool = haha::ThreadPool::getInstance();
 
 void work(int id){
-    HAHA_LOG_INFO(HAHA_LOG_SYNC_ROOT()) << "work: " << id << "start";
+    HAHA_LOG_INFO(HAHA_LOG_SYNC_ROOT()) << "work: " << id << " start";
     // int nothing = 1;
     // for(int i = 0; i < 10000; ++i){
     //     nothing += i;
     // }
-    HAHA_LOG_INFO(HAHA_LOG_SYNC_ROOT()) << "work: " << id << "done";
+    HAHA_LOG_INFO(HAHA_LOG_SYNC_ROOT()) << "work: " << id << " done";
     ++cnt;
 }
 
@@ -29,7 +29,7 @@ int main(){
         pool.addTask(std::bind(work, i));
     }
     while(cnt < NUM);
-    std::cout << cnt.load() << std::endl;
-    std::cout << (double)(clock() - t) / CLOCKS_PER_SEC << std::endl;
+    std::cout << "task count: " << cnt.load() << std::endl;
+    std::cout << "time cost: " << (double)(clock() - t) / CLOCKS_PER_SEC << " seconds" << std::endl;
     return 0;
 }

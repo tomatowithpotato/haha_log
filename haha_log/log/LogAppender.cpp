@@ -25,7 +25,9 @@ void StdoutSyncLogAppender::append(LogInfo::ptr info){
     auto level = info->getLevel();
     if(level >= m_level){
         MutexType::RAIILock lock(m_mutex);
-        std::cout << m_formatter->format(info);
+        LogStream stream;
+        m_formatter->format(stream, info);
+        std::cout << stream.buffer().data();
     }
 }
 
@@ -41,8 +43,10 @@ void FileSyncLogAppender::append(LogInfo::ptr info){
     auto level = info->getLevel();
     if(level >= m_level){
         MutexType::RAIILock lock(m_mutex);
-        auto logline = m_formatter->format(info);
-        file_->append(logline.data(), logline.size());
+        LogStream stream;
+        m_formatter->format(stream, info);
+        auto &buffer = stream.buffer();
+        file_->append(buffer.data(), buffer.length());
     }
 }
 
@@ -83,12 +87,17 @@ FileAsyncLogAppender::FileAsyncLogAppender(const std::string &filepath,
 void FileAsyncLogAppender::append(LogInfo::ptr info){
     auto level = info->getLevel();
     if(level >= m_level){
-        auto logline = m_formatter->format(info);
-        auto len = logline.size();
+
+        LogStream stream;
+        m_formatter->format(stream, info);
+        auto &buffer = stream.buffer();
+        auto logline = buffer.data();
+        auto len = buffer.length();
+
         MutexType::RAIILock lock(mutex_);
-        if (static_cast<size_t>(currentBuffer_->avail()) > len)
+        if (currentBuffer_->avail() > len)
         {
-            currentBuffer_->append(logline.c_str(), len);
+            currentBuffer_->append(logline, len);
         }
         else
         {
@@ -102,7 +111,7 @@ void FileAsyncLogAppender::append(LogInfo::ptr info){
             {
                 currentBuffer_.reset(new Buffer); // Rarely happens
             }
-            currentBuffer_->append(logline.c_str(), len);
+            currentBuffer_->append(logline, len);
 
             // 唤醒日志线程
             if(notify_func_){
