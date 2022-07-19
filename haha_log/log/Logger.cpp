@@ -61,12 +61,24 @@ void Logger::clearAppenders(){
 SyncLogger::SyncLogger(const std::string &name)
     :Logger(name)
 {
-    // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
-    formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"));
     defaultAppender_ = std::make_shared<StdoutSyncLogAppender>();
     defaultAppender_->setFormatter(formatter_);
 }
 
+
+// void SyncLogger::log(LogInfo::ptr info){
+//     auto level = info->getLevel();
+//     if(level >= level_){
+//         if(!appenders_.empty()){
+//             for(auto &i : appenders_){
+//                 i->append(info);
+//             }
+//         }
+//         else if(defaultAppender_){
+//             defaultAppender_->append(info);
+//         }
+//     }
+// }
 
 void SyncLogger::log(LogInfo::ptr info){
     auto level = info->getLevel();
@@ -90,17 +102,14 @@ AsyncLogger::AsyncLogger(const std::string &name, int flushInterval)
     running_(true),
     thread_(std::make_shared<Thread>([this](){task();}))
 {
-    // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
-    formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"));
+    
 }
 
 void AsyncLogger::log(LogInfo::ptr info){
     auto level = info->getLevel();
     if(level >= level_){
-        if(!appenders_.empty()){
-            for(auto &i : appenders_){
-                i->append(info);
-            }
+        for(auto &i : appenders_){
+            i->append(info);
         }
     }
 }

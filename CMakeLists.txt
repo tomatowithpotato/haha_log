@@ -87,5 +87,13 @@ add_executable(AsyncLogTest.out tests/AsyncLogTest.cc)                # 设置�
 add_dependencies(AsyncLogTest.out haha_log)                               # 设置依赖关系
 target_link_libraries(AsyncLogTest.out ${ALL_LIBS})                   # 设置要链接的库
 
+add_executable(AsyncLog_singleThread_Test.out tests/AsyncLog_singleThread_Test.cc)                # 设置要生成可执行文件的代码
+add_dependencies(AsyncLog_singleThread_Test.out haha_log)                               # 设置依赖关系
+target_link_libraries(AsyncLog_singleThread_Test.out ${ALL_LIBS})                   # 设置要链接的库
+
+add_executable(SyncLog_singleThread_Test.out tests/SyncLog_singleThread_Test.cc)                # 设置要生成可执行文件的代码
+add_dependencies(SyncLog_singleThread_Test.out haha_log)                               # 设置依赖关系
+target_link_libraries(SyncLog_singleThread_Test.out ${ALL_LIBS})                   # 设置要链接的库
+
 # SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)                   # 设置可执行文件的位置
 # SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)                      # 设置动态链接库的位置

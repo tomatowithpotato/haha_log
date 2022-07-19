@@ -47,15 +47,15 @@ LogLevel::Level LogLevel::FromString(const std::string &str){
 }
 
 
-LogInfo::LogInfo(std::string loggerName, 
+LogInfo::LogInfo(const std::string &loggerName, 
                     LogLevel::Level level, 
                     const char *file, 
                     int32_t line, 
                     uint32_t elapse,
                     uint32_t thread_id, 
                     // uint32_t fiber_id, 
-                    uint64_t time,
-                    const std::string &thread_name)
+                    const TimePoint& time)
+                    // const std::string &thread_name)
         :loggerName_(loggerName),
         file_(file), 
         line_(line), 
@@ -63,9 +63,9 @@ LogInfo::LogInfo(std::string loggerName,
         threadId_(thread_id), 
         // m_fiberId(fiber_id), 
         time_(time),
-        threadName_(thread_name),
-        level_(level){
-    
+        // threadName_(thread_name),
+        level_(level)
+{    
 }
 
 void LogInfo::format(const char* fmt, ...){
@@ -79,7 +79,7 @@ void LogInfo::format(const char* fmt, va_list al){
     char *buf = nullptr;
     int len = vasprintf(&buf, fmt, al);
     if(len != -1){
-        ss_ << std::string(buf, len);
+        ss_.append(buf, len);
         free(buf);
     }
 }

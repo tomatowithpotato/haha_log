@@ -17,9 +17,12 @@ namespace log{
 class Logger : public std::enable_shared_from_this<Logger>{
 public:
     typedef std::shared_ptr<Logger> ptr;
-    typedef SpinLock MutexType;
+    typedef MutexLock MutexType;
 
-    Logger(const std::string &name = "root"):name_(name),level_(LogLevel::DEBUG){}
+    Logger(const std::string &name = "root"):name_(name),level_(LogLevel::DEBUG){
+        // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
+        formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"));
+    }
 
     virtual ~Logger() {}
 
@@ -30,13 +33,11 @@ public:
     void clearAppenders();
     LogLevel::Level getLevel() const {return level_;}
     void setLevel(LogLevel::Level val){level_ = val;}
-    std::string getName() const {return name_;}
+    const std::string& getName() const {return name_;}
 
     void setFormatter(LogFormatter::ptr val);
     void setFormatter(const std::string &val);
     LogFormatter::ptr getFormatter();
-
-    std::string toYamlString();
 
 protected:
     std::string name_;                         // 日志名称
@@ -58,7 +59,6 @@ protected:
 // 异步日志器
 class AsyncLogger : public Logger{
 public:
-    typedef MutexLock MutexType;
     typedef ConditionVariable<MutexType>::ptr Condition;
 
     AsyncLogger(const std::string &name, int flushInterval);

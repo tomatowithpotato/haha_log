@@ -5,6 +5,7 @@
 #include <vector>
 #include <ostream>
 #include <memory>
+#include <chrono>
 
 #include "log/LogInfo.h"
 #include "log/LogStream.h"
@@ -21,6 +22,7 @@ public:
     typedef LogStream outStream;
 
     LogFormatter(const std::string &pattern);
+    // void format(outStream&, LogInfo::ptr info);
     void format(outStream&, LogInfo::ptr info);
     // outStream format(LogInfo::ptr info);
 
@@ -115,13 +117,23 @@ public:
             m_format = "%Y-%m-%d %H:%M:%S";
         }
     }
-    void format(outStream &os, LogInfo::ptr info) override{
-        struct tm tm;
-        time_t time = info->getTime();
-        localtime_r(&time, &tm);
-        char buf[64];
-        strftime(buf, sizeof(buf), m_format.c_str(), &tm);
-        os << buf;
+    // void format(outStream &os, LogInfo::ptr info) override{
+    //     struct tm tm;
+    //     time_t time = info->getTime();
+    //     localtime_r(&time, &tm);
+    //     char buf[64];
+    //     size_t n = strftime(buf, sizeof(buf), m_format.c_str(), &tm);
+    //     os.append(buf, n);
+    // }
+    void format(outStream &os, LogInfo::ptr info)
+    {
+        char date[64];
+        // auto now = std::chrono::system_clock::now();
+        const auto& now = info->getTime();
+        auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+        std::strftime(date, sizeof(date), m_format.c_str(), std::gmtime(&in_time_t));
+        os << date;
     }
 private:
     std::string m_format;
@@ -132,7 +144,8 @@ class FilenameFormatItem : public LogFormatter::FormatItem{
 public:
     FilenameFormatItem(const std::string &fmt = ""){}
     void format(outStream &os, LogInfo::ptr info) override{
-        os << info->getFile();
+        auto &f = info->getFile();
+        os.append(f.data_, f.size_);
     }
 };
 

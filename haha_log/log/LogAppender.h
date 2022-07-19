@@ -22,6 +22,7 @@ public:
     typedef SpinLock MutexType;
     virtual ~LogAppender(){}
 
+    // virtual void append(LogInfo::ptr info) = 0;
     virtual void append(LogInfo::ptr info) = 0;
 
     virtual void flush() = 0;
@@ -36,7 +37,7 @@ public:
     bool hasFormatter() { return m_formatter != nullptr; }
 
     // 只有异步日志才需要
-    virtual void setNotifyFunc(std::function<void()> notify_func) = 0;
+    virtual void setNotifyFunc(const std::function<void()> &notify_func) = 0;
     virtual bool empty() = 0;
 
 protected:
@@ -50,20 +51,18 @@ class SyncLogAppender : public LogAppender{
 public:
     virtual ~SyncLogAppender() {}
     void flush() {}
-    void setNotifyFunc(std::function<void()> notify_func) override {}
+    void setNotifyFunc(const std::function<void()> &notify_func) override {}
     bool empty() { return true; }
 };
 
 class AsyncLogAppender : public LogAppender{
 public:
-    typedef MutexLock MutexType;
-
     AsyncLogAppender();
                     // int flushInterval);
     
     virtual ~AsyncLogAppender() {}
     
-    void setNotifyFunc(std::function<void()> notify_func) { notify_func_ = notify_func; }
+    void setNotifyFunc(const std::function<void()> &notify_func) { notify_func_ = std::move(notify_func); }
 
     bool empty() { 
         MutexType::RAIILock lock(mutex_);
@@ -96,6 +95,7 @@ protected:
 class StdoutSyncLogAppender : public SyncLogAppender{
 public:
     typedef std::shared_ptr<StdoutSyncLogAppender> ptr;
+    // void append(LogInfo::ptr info) override;
     void append(LogInfo::ptr info) override;
 };
 
@@ -107,6 +107,7 @@ public:
     FileSyncLogAppender(const std::string &filepath,
                         off_t rollSize);
     
+    // void append(LogInfo::ptr info) override;
     void append(LogInfo::ptr info) override;
 
 private:
@@ -140,6 +141,7 @@ public:
     
     ~FileAsyncLogAppender(){ file_->flush(); }
 
+    // void append(LogInfo::ptr info) override;
     void append(LogInfo::ptr info) override;
     void flush() override;
     // virtual std::string toYamlString() override;
