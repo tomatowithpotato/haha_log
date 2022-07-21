@@ -22,24 +22,24 @@ double compute_timediff(const struct timeval &tvBegin, const struct timeval &tvE
     return (tvEnd.tv_sec - tvBegin.tv_sec) + ((tvEnd.tv_usec - tvBegin.tv_usec) / 1000.0) / 1000.0;
 }
 
-class FormatItem{
-public:
-    typedef std::shared_ptr<FormatItem> ptr;
-    typedef haha::log::LogStream outStream;
-    virtual ~FormatItem(){}
-    virtual void format(outStream& os, haha::log::LogInfo &info) = 0;
-};
+// class FormatItem{
+// public:
+//     typedef std::shared_ptr<FormatItem> ptr;
+//     typedef haha::log::LogStream outStream;
+//     virtual ~FormatItem(){}
+//     virtual void format(outStream& os, haha::log::LogInfo &info) = 0;
+// };
 
-class NewLineItem : public FormatItem{
-    void format(outStream& os, haha::log::LogInfo &info) override{
-        os << '\n';
-    }
-};
+// class NewLineItem : public FormatItem{
+//     void format(outStream& os, haha::log::LogInfo &info) override{
+//         os << '\n';
+//     }
+// };
 
-std::function<void(haha::log::LogStream&, haha::log::LogInfo &info)> g_func;
-void newlinefunc(haha::log::LogStream& stream, haha::log::LogInfo &info){
-    stream << '\n';
-}
+// std::function<void(haha::log::LogStream&, haha::log::LogInfo &info)> g_func;
+// void newlinefunc(haha::log::LogStream& stream, haha::log::LogInfo &info){
+//     stream << '\n';
+// }
 
 int main(){
     struct timeval tvBegin, tvEnd;
@@ -77,6 +77,7 @@ int main(){
         // }
     }
     gettimeofday(&tvEnd, NULL);
+    std::cout << "task count: " << NUM << std::endl;
     std::cout << "time cost: " << compute_timediff(tvBegin, tvEnd) << " seconds" << std::endl;
     return 0;
 }

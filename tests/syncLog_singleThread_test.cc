@@ -18,6 +18,7 @@ int main(){
         HAHA_LOG_INFO(HAHA_LOG_SYNC_ROOT()) << "work: " << i << " done";
     }
     gettimeofday(&tvEnd, NULL);
+    std::cout << "task count: " << NUM << std::endl;
     std::cout << "time cost: " << compute_timediff(tvBegin, tvEnd) << " seconds" << std::endl;
     return 0;
 }

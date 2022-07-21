@@ -79,9 +79,9 @@ set(
     uuid
 )
 
-add_executable(asyncLog_ThreadPool_test.out tests/asyncLog_ThreadPool_test.cc)             # 设置要生成可执行文件的代码
-add_dependencies(asyncLog_ThreadPool_test.out haha_log)                               # 设置依赖关系
-target_link_libraries(asyncLog_ThreadPool_test.out ${ALL_LIBS})                   # 设置要链接的库
+add_executable(asyncLog_threadPool_test.out tests/asyncLog_threadPool_test.cc)             # 设置要生成可执行文件的代码
+add_dependencies(asyncLog_threadPool_test.out haha_log)                               # 设置依赖关系
+target_link_libraries(asyncLog_threadPool_test.out ${ALL_LIBS})                   # 设置要链接的库
 
 add_executable(asyncLog_singleThread_test.out tests/asyncLog_singleThread_test.cc)                # 设置要生成可执行文件的代码
 add_dependencies(asyncLog_singleThread_test.out haha_log)                               # 设置依赖关系
