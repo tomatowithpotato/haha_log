@@ -85,11 +85,11 @@ void SyncLogger::log(LogInfo::ptr info){
     if(level >= level_){
         if(!appenders_.empty()){
             for(auto &i : appenders_){
-                i->append(info);
+                i->append(*info);
             }
         }
         else if(defaultAppender_){
-            defaultAppender_->append(info);
+            defaultAppender_->append(*info);
         }
     }
 }
@@ -100,16 +100,16 @@ AsyncLogger::AsyncLogger(const std::string &name, int flushInterval)
     flushInterval_(flushInterval),
     cond_(std::make_shared<ConditionVariable<MutexType>>()),
     running_(true),
-    thread_(std::make_shared<Thread>([this](){task();}))
+    thread_(std::make_unique<Thread>([this](){task();}))
 {
-    
+
 }
 
 void AsyncLogger::log(LogInfo::ptr info){
     auto level = info->getLevel();
     if(level >= level_){
         for(auto &i : appenders_){
-            i->append(info);
+            i->append(*info);
         }
     }
 }

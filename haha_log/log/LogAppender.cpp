@@ -21,8 +21,8 @@ LogFormatter::ptr LogAppender::getFormatter(){
 // ################################################### 同步 ###################################################
 
 
-void StdoutSyncLogAppender::append(LogInfo::ptr info){
-    auto level = info->getLevel();
+void StdoutSyncLogAppender::append(const LogInfo &info){
+    auto level = info.getLevel();
     if(level >= m_level){
         MutexType::RAIILock lock(m_mutex);
         LogStream stream;
@@ -39,8 +39,8 @@ FileSyncLogAppender::FileSyncLogAppender(const std::string &filepath, off_t roll
     file_ = std::make_unique<LogFile>(filepath_, rollSize_, false);
 }
 
-void FileSyncLogAppender::append(LogInfo::ptr info){
-    auto level = info->getLevel();
+void FileSyncLogAppender::append(const LogInfo &info){
+    auto level = info.getLevel();
     if(level >= m_level){
         MutexType::RAIILock lock(m_mutex);
         LogStream stream;
@@ -84,15 +84,21 @@ FileAsyncLogAppender::FileAsyncLogAppender(const std::string &filepath,
 
 
 
-void FileAsyncLogAppender::append(LogInfo::ptr info){
-    auto level = info->getLevel();
+void FileAsyncLogAppender::append(const LogInfo &info){
+    auto level = info.getLevel();
     if(level >= m_level){
-
         LogStream stream;
-        m_formatter->format(stream, info);
+        const char *logline = nullptr;
+        int len = 0;
+
+        m_formatter->format(stream, info); // 极其耗时！！！
         auto &buffer = stream.buffer();
-        auto logline = buffer.data();
-        auto len = buffer.length();
+        logline = buffer.data();
+        len = buffer.length();
+
+        // /* 以下两行仅用于测试哦 */
+        // logline = "";
+        // len = 0;
 
         MutexType::RAIILock lock(mutex_);
         if (currentBuffer_->avail() > len)
@@ -123,6 +129,8 @@ void FileAsyncLogAppender::append(LogInfo::ptr info){
 
 
 void FileAsyncLogAppender::flush(){
+    // std::cout << "fuck you flush" << std::endl;
+
     assert(newBuffer1 && newBuffer1->length() == 0);
     assert(newBuffer2 && newBuffer2->length() == 0);
     assert(buffersToWrite.empty());

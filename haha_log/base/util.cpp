@@ -1,11 +1,14 @@
 #include "base/util.h"
 #include <algorithm>
 #include <assert.h>
+#include <sys/types.h>
 
 namespace haha{
 
+thread_local static const pid_t PID = gettid();
+
 pid_t GetThreadId(){
-    return syscall(SYS_gettid);
+    return PID;
 }
 
 // 十六进制数转十进制数

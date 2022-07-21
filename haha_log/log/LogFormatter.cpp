@@ -102,7 +102,6 @@ void LogFormatter::init(){
     // %l -- 行号
     // %T -- tab
 
-    // 麻了, 骚啊
     // 建立格式符到相应的格式处理器的映射
     static std::map<std::string, std::function<FormatItem::ptr(const std::string &str)> > s_format_items = {
 #define XX(str, C) \
@@ -145,7 +144,7 @@ void LogFormatter::init(){
 }
 
 
-void LogFormatter::format(outStream &ss, LogInfo::ptr info){
+void LogFormatter::format(outStream &ss, const LogInfo &info){
     for(auto &i : m_items){
         i->format(ss, info);
     }

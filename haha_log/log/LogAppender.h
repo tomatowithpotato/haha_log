@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <functional>
+#include <atomic>
+#include <iostream>
 #include "base/Mutex.h"
 #include "log/LogUtil.h"
 #include "log/LogFile.h"
@@ -22,8 +24,8 @@ public:
     typedef SpinLock MutexType;
     virtual ~LogAppender(){}
 
-    // virtual void append(LogInfo::ptr info) = 0;
-    virtual void append(LogInfo::ptr info) = 0;
+    // virtual void append(const LogInfo &info) = 0;
+    virtual void append(const LogInfo &info) = 0;
 
     virtual void flush() = 0;
     // virtual std::string toYamlString() = 0;
@@ -95,8 +97,8 @@ protected:
 class StdoutSyncLogAppender : public SyncLogAppender{
 public:
     typedef std::shared_ptr<StdoutSyncLogAppender> ptr;
-    // void append(LogInfo::ptr info) override;
-    void append(LogInfo::ptr info) override;
+    // void append(const LogInfo &info) override;
+    void append(const LogInfo &info) override;
 };
 
 // 输出到文件的同步Appender
@@ -107,8 +109,8 @@ public:
     FileSyncLogAppender(const std::string &filepath,
                         off_t rollSize);
     
-    // void append(LogInfo::ptr info) override;
-    void append(LogInfo::ptr info) override;
+    // void append(const LogInfo &info) override;
+    void append(const LogInfo &info) override;
 
 private:
     std::string filepath_;
@@ -125,7 +127,7 @@ private:
     
 //     StdoutAsyncLogAppender(off_t rollSize,
 //                             int flushInterval);
-//     void append(LogInfo::ptr info) override;
+//     void append(const LogInfo &info) override;
 //     void flush() override;
 //     // virtual std::string toYamlString() override;
 // };
@@ -139,10 +141,12 @@ public:
                         off_t rollSize);
                         // int flushInterval);
     
-    ~FileAsyncLogAppender(){ file_->flush(); }
+    ~FileAsyncLogAppender(){ 
+        file_->flush(); 
+    }
 
-    // void append(LogInfo::ptr info) override;
-    void append(LogInfo::ptr info) override;
+    // void append(const LogInfo &info) override;
+    void append(const LogInfo &info) override;
     void flush() override;
     // virtual std::string toYamlString() override;
 private:

@@ -22,11 +22,14 @@ public:
     Logger(const std::string &name = "root"):name_(name),level_(LogLevel::DEBUG){
         // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%F%T[%p]%T[%c]%T%f:%l%T%m%n"));
         formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%T%t%T%N%T%T[%p]%T[%c]%T%f:%l%T%m%n"));
+        // std::string fuck_format("%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n%n");
+        // formatter_.reset(new LogFormatter(fuck_format));
+        // formatter_.reset(new LogFormatter("%d{%Y-%m-%d %H:%M:%S}%m%n"));
     }
 
     virtual ~Logger() {}
 
-    virtual void log(LogInfo::ptr info) {}
+    virtual void log(LogInfo::ptr info) = 0;
 
     virtual void addAppender(LogAppender::ptr appender);
     void delAppender(LogAppender::ptr appender);
@@ -79,7 +82,7 @@ private:
     MutexType mutex_;
     Condition cond_;
     std::atomic<bool> running_;
-    Thread::ptr thread_;
+    std::unique_ptr<Thread> thread_;
 };
 
 }
