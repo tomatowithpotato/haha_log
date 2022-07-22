@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd ./bin/debug
-./SyncLogTest.out
+./syncLog_singleThread_test.out

@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <stdarg.h>
+#include "base/noncopyable.h"
 #include "base/Mutex.h"
 #include "base/util.h"
 #include "Logger.h"
@@ -64,7 +65,7 @@ private:
 };
 
 
-class LoggerManager{
+class LoggerManager : public noncopyable{
 public:
     typedef SpinLock MutexType;
     
@@ -75,18 +76,32 @@ public:
 
     Logger::ptr getLogger(const std::string &name);
     void init();
-    Logger::ptr getSyncRoot() const {return sync_root_;}
-    Logger::ptr getAsyncRoot() const {return async_root_;}
 
-private:
-    LoggerManager();
+    // 默认同步日志器
+    static Logger::ptr getSyncRoot() {
+        static std::shared_ptr<Logger> sync_root = std::make_shared<SyncLogger>(
+            "sync_root",
+            std::make_shared<FileSyncLogAppender>(default_sync_log_file, default_roll_size)
+        );
+        return sync_root;
+    }
+
+    // 默认异步日志器
+    Logger::ptr getAsyncRoot() {
+        static std::shared_ptr<Logger> async_root = std::make_shared<AsyncLogger>(
+            "async_root",
+            default_flush_interval,
+            std::make_shared<FileAsyncLogAppender>(default_async_log_file, default_roll_size)
+        );
+        return async_root;
+    }
 
 private:
     MutexType mutex_;
     std::map<std::string, Logger::ptr> loggers_;
-    Logger::ptr sync_root_;
-    Logger::ptr async_root_;
-    Logger::ptr sync_stdout_;
+    // Logger::ptr sync_root_;
+    // Logger::ptr async_root_;
+    // Logger::ptr sync_stdout_;
 };
 
 }

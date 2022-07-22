@@ -91,7 +91,7 @@ void FileAsyncLogAppender::append(const LogInfo &info){
         const char *logline = nullptr;
         int len = 0;
 
-        m_formatter->format(stream, info); // 极其耗时！！！
+        m_formatter->format(stream, info);
         auto &buffer = stream.buffer();
         logline = buffer.data();
         len = buffer.length();
@@ -149,15 +149,18 @@ void FileAsyncLogAppender::flush(){
 
     assert(!buffersToWrite.empty());
 
-    if (buffersToWrite.size() > 25)
+    // 如果突然写入太多数据
+    if (buffersToWrite.size() > kbuffersMaxSize)
     {
+        int leftSize = kbuffersMaxSize;
         char buf[256];
         snprintf(buf, sizeof(buf), "Dropped log messages at %s, %zd larger buffers\n",
                 TimeStamp::now().toFormattedString().c_str(),
-                buffersToWrite.size()-2);
+                buffersToWrite.size()-leftSize);
         fputs(buf, stderr);
         file_->append(buf, static_cast<int>(strlen(buf)));
-        buffersToWrite.erase(buffersToWrite.begin()+2, buffersToWrite.end());
+        // 保留一部分数据，丢弃多的，防止磁盘被冲垮
+        buffersToWrite.erase(buffersToWrite.begin()+leftSize, buffersToWrite.end());
     }
 
     for (const auto& buffer : buffersToWrite)

@@ -1,4 +1,4 @@
 #!/bin/bash
 
 cd ./bin/debug
-./AsyncLogTest.out
+./asyncLog_singleThread_test.out

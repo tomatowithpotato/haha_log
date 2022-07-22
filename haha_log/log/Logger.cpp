@@ -58,8 +58,8 @@ void Logger::clearAppenders(){
 }
 
 
-SyncLogger::SyncLogger(const std::string &name)
-    :Logger(name)
+SyncLogger::SyncLogger(const std::string &name, SyncLogAppender::ptr appender)
+    :Logger(name, appender)
 {
     defaultAppender_ = std::make_shared<StdoutSyncLogAppender>();
     defaultAppender_->setFormatter(formatter_);
@@ -95,8 +95,8 @@ void SyncLogger::log(LogInfo::ptr info){
 }
 
 
-AsyncLogger::AsyncLogger(const std::string &name, int flushInterval)
-    :Logger(name),
+AsyncLogger::AsyncLogger(const std::string &name, int flushInterval, AsyncLogAppender::ptr appender)
+    :Logger(name, appender),
     flushInterval_(flushInterval),
     cond_(std::make_shared<ConditionVariable<MutexType>>()),
     running_(true),
