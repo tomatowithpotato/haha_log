@@ -7,6 +7,7 @@
 #include <memory>
 #include <chrono>
 
+#include "base/TimeStamp.h"
 #include "log/LogInfo.h"
 #include "log/LogStream.h"
 
@@ -127,11 +128,14 @@ public:
     void format(outStream &os, const LogInfo &info)
     {
         // localtime函数每次都要访问一个系统文件，速度奇慢无比
-        // 因此为了性能，选用gmtime
+        // 因此为了性能，只在首次调用时计算当前时区与UTC时间的差值
+        // 以后每次用gmtime得到UTC时间+差值得到本地时间
+        static const time_t tz_offset = haha::TimeStamp::get_TZoffset();
         char date[64];
         // auto now = std::chrono::system_clock::now();
         const auto& now = info.getTime();
         auto in_time_t = std::chrono::system_clock::to_time_t(now);
+        in_time_t += tz_offset;
         struct tm tm_res;
         gmtime_r(&in_time_t, &tm_res);
         std::strftime(date, sizeof(date), m_format.c_str(), &tm_res);
