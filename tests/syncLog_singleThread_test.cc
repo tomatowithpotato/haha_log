@@ -15,7 +15,7 @@ int main(){
 
     gettimeofday(&tvBegin, NULL);
     for(int i = 0; i < NUM; ++i){
-        HAHA_LOG_INFO(HAHA_LOG_SYNC_ROOT()) << "work: " << i << " done";
+        HAHA_LOG_INFO(HAHA_LOG_SYNC_FILE_ROOT()) << "work: " << i << " done";
     }
     gettimeofday(&tvEnd, NULL);
     std::cout << "task count: " << NUM << std::endl;

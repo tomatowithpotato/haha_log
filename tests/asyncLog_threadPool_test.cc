@@ -13,7 +13,7 @@ std::atomic<int> cnt = 0;
 haha::ThreadPool &pool = haha::ThreadPool::getInstance();
 
 void work(int id){
-    HAHA_LOG_INFO(HAHA_LOG_ASYNC_ROOT()) << "work: " << id;
+    HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "work: " << id;
     ++cnt;
 }
 

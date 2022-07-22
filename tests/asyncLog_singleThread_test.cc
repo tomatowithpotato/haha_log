@@ -55,7 +55,7 @@ int main(){
     // auto info = TEST_LOGGERINFO(logger);
     
     for(int i = 0; i < NUM; ++i){
-        HAHA_LOG_INFO(HAHA_LOG_ASYNC_ROOT()) << "work: " << i << " done";
+        HAHA_LOG_INFO(HAHA_LOG_ASYNC_FILE_ROOT()) << "work: " << i << " done";
         // HAHA_LOG_INFO(HAHA_LOG_ASYNC_ROOT()) << msg;
         // HAHA_LOG_INFO(HAHA_LOG_ASYNC_ROOT());
         // HAHA_LOG_ASYNC_ROOT()->getName();

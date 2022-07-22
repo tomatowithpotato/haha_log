@@ -36,9 +36,9 @@
 #define HAHA_LOG_FMT_FATAL(logger, fmt, ...)  HAHA_LOG_FMT_LEVEL(logger, haha::log::LogLevel::Level::FATAL, fmt, __VA_ARGS__)
 
 
-#define HAHA_LOG_SYNC_ROOT() haha::log::LoggerManager::getInstance().getSyncRoot()
-#define HAHA_LOG_ASYNC_ROOT() haha::log::LoggerManager::getInstance().getAsyncRoot()
-
+#define HAHA_LOG_SYNC_FILE_ROOT() haha::log::LoggerManager::getInstance().getSyncFileRoot()
+#define HAHA_LOG_ASYNC_FILE_ROOT() haha::log::LoggerManager::getInstance().getAsyncFileRoot()
+#define HAHA_LOG_SYNC_STDOUT_ROOT() haha::log::LoggerManager::getInstance().getSyncStdoutRoot()
 
 
 namespace haha{
@@ -77,23 +77,32 @@ public:
     Logger::ptr getLogger(const std::string &name);
     void init();
 
-    // 默认同步日志器
-    static Logger::ptr getSyncRoot() {
+    // 默认同步日志器 写入到文件
+    static Logger::ptr getSyncFileRoot() {
         static std::shared_ptr<Logger> sync_root = std::make_shared<SyncLogger>(
-            "sync_root",
+            "sync_file_root",
             std::make_shared<FileSyncLogAppender>(default_sync_log_file, default_roll_size)
         );
         return sync_root;
     }
 
-    // 默认异步日志器
-    Logger::ptr getAsyncRoot() {
+    // 默认异步日志器 写入到文件
+    Logger::ptr getAsyncFileRoot() {
         static std::shared_ptr<Logger> async_root = std::make_shared<AsyncLogger>(
-            "async_root",
+            "async_file_root",
             default_flush_interval,
             std::make_shared<FileAsyncLogAppender>(default_async_log_file, default_roll_size)
         );
         return async_root;
+    }
+
+    // 默认同步日志器 写入到标准输出
+    static Logger::ptr getSyncStdoutRoot() {
+        static std::shared_ptr<Logger> sync_root = std::make_shared<SyncLogger>(
+            "sync_stdout_root",
+            std::make_shared<StdoutSyncLogAppender>()
+        );
+        return sync_root;
     }
 
 private:

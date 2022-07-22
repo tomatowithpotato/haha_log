@@ -95,5 +95,9 @@ add_executable(syncLog_threadPool_test.out tests/syncLog_threadPool_test.cc)    
 add_dependencies(syncLog_threadPool_test.out haha_log)                               # 设置依赖关系
 target_link_libraries(syncLog_threadPool_test.out ${ALL_LIBS})                   # 设置要链接的库
 
+add_executable(syncLog_stdout_test.out tests/syncLog_stdout_test.cc)                # 设置要生成可执行文件的代码
+add_dependencies(syncLog_stdout_test.out haha_log)                               # 设置依赖关系
+target_link_libraries(syncLog_stdout_test.out ${ALL_LIBS})                   # 设置要链接的库
+
 # SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)                   # 设置可执行文件的位置
 # SET(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)                      # 设置动态链接库的位置
